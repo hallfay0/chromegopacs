@@ -34,7 +34,7 @@ def convert_to_hyproxy(json_string):
         sni = tls.get('sni') if tls else None
         location = get_physical_location(server)
 
-        hyproxy_string = f"hy2://{auth}@{server}/?insecure={int(insecure)}"
+        hyproxy_string = f"hy2://{auth}@{server}?insecure={int(insecure)}"
         if sni:
             hyproxy_string += f"&sni={sni}"
         if location:
@@ -50,7 +50,7 @@ def convert_to_hysteria(json_string):
     try:
         json_data = json.loads(json_string)
         location = get_physical_location(json_data['server'])
-        hysteria_string = f"hysteria://{json_data['server']}/?insecure=1&peer={json_data['server_name']}&auth={json_data['auth_str']}&upmbps={json_data['up_mbps'] * 5}&downmbps={json_data['down_mbps'] * 2}&alpn={json_data['alpn']}#{location}"
+        hysteria_string = f"hysteria://{json_data['server']}?insecure=1&peer={json_data['server_name']}&auth={json_data['auth_str']}&upmbps={json_data['up_mbps'] * 5}&downmbps={json_data['down_mbps'] * 2}&alpn={json_data['alpn']}#{location}"
         return hysteria_string
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON: {e}")
@@ -64,7 +64,7 @@ def convert_to_all(content):
 #             return None        
 #            all_string = f"hysteria://{server_info['server']}:{server_info['port']}/?auth={server_info['auth-str']}&upmbps={server_info['up'].split(' ')[0]}&downmbps={server_info['down'].split(' ')[0]}&alpn={server_info['alpn'][0]}#{get_physical_location(server_info['server'])}"
         if server_info['type'].startswith("hysteria2"):
-            all_string = f"hy2://{server_info['password']}@{server_info['server']}:{server_info['port']}/?insecure=1&sni={server_info['sni']}#{get_physical_location(server_info['server'])}"
+            all_string = f"hy2://{server_info['password']}@{server_info['server']}:{server_info['port']}?insecure=1&sni={server_info['sni']}#{get_physical_location(server_info['server'])}"
         elif server_info['type'].startswith("tuic"):
             all_string = f"tuic://{server_info['uuid']}:{server_info['password']}@{server_info['server']}:{server_info['port']}/?congestion_control={server_info['congestion-controller']}&udp_relay_mode={server_info['udp-relay-mode']}&alpn={server_info['alpn'][0]}&allow_insecure=1#{get_physical_location(server_info['server'])}"
         else:
